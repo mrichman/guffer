@@ -1,0 +1,22 @@
+hash: d86eef466c6a206132f42243347d37551c30f3c96f12ccb46a878110f9b9f545
+updated: 2016-11-08T18:03:46.234312995-05:00
+imports:
+- name: github.com/azr/backoff
+  version: 53511d3c733003985b0b76f733df1f4d0095ee6a
+- name: github.com/ChimeraCoder/anaconda
+  version: 00ecb7b4510497dc28cd46a598007ab8fe01f889
+- name: github.com/ChimeraCoder/tokenbucket
+  version: c5a927568de7aad8a58127d80bcd36ca4e71e454
+- name: github.com/dustin/go-jsonpointer
+  version: ba0abeacc3dcca5b9b20f31509c46794edbc9965
+- name: github.com/dustin/gojson
+  version: 2e71ec9dd5adce3b168cd0dbde03b5cc04951c30
+- name: github.com/garyburd/go-oauth
+  version: da8aea9e20eda8fcb5711f929539ba9a9ecf4fb9
+  subpackages:
+  - oauth
+- name: github.com/jasonlvhit/gocron
+  version: 42a5804d37aa0b9239b265e894a16b8edbf52d54
+- name: github.com/robfig/cron
+  version: b024fc5ea0e34bc3f83d9941c8d60b0622bfaca4
+testImports: []

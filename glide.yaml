@@ -1,0 +1,5 @@
+package: github.com/mrichman/guffer
+import:
+- package: github.com/ChimeraCoder/anaconda
+- package: github.com/robfig/cron
+  version: ^1.0.0
