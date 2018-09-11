@@ -7,6 +7,7 @@ import (
 	"os"
 
 	"fmt"
+
 	"github.com/BurntSushi/toml"
 	"github.com/ChimeraCoder/anaconda"
 	"github.com/jasonlvhit/gocron"
@@ -35,10 +36,16 @@ var api *anaconda.TwitterApi
 var auth TwitterAuthKeys
 
 func main() {
+
+	if len(os.Args) == 1 {
+		fmt.Println("Usage: guffer guffer.json <auth.toml>")
+		os.Exit(1)
+	}
+
 	// Load the Twitter API keys
 
 	// Check if the second argument with toml auth file was given, if not load auth keys from env variables
-	if os.Args[2] == "" {
+	if len(os.Args) == 2 {
 		auth.loadFromEnvVariables()
 	} else {
 		auth.loadFromTomlFile(os.Args[2])
