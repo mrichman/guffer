@@ -6,6 +6,8 @@ import (
 	"log"
 	"os"
 
+	"fmt"
+	"github.com/BurntSushi/toml"
 	"github.com/ChimeraCoder/anaconda"
 	"github.com/jasonlvhit/gocron"
 )
@@ -21,33 +23,25 @@ type Tweet struct {
 	Status string
 }
 
+// Twitter Auth Keys
+type TwitterAuthKeys struct {
+	ConsumerKey       string
+	ConsumerSecret    string
+	AccessToken       string
+	AccessTokenSecret string
+}
+
 var api *anaconda.TwitterApi
+var auth TwitterAuthKeys
 
 func main() {
 	// Load the Twitter API keys
 
-	consumerKey := os.Getenv("CONSUMER_KEY")
-
-	if consumerKey == "" {
-		log.Fatal("Environment variable CONSUMER_KEY not set. See https://apps.twitter.com/app/new for more info.")
-	}
-
-	consumerSecret := os.Getenv("CONSUMER_SECRET")
-
-	if consumerSecret == "" {
-		log.Fatal("Environment variable CONSUMER_SECRET not set. See https://apps.twitter.com/app/new for more info.")
-	}
-
-	accessToken := os.Getenv("ACCESS_TOKEN")
-
-	if accessToken == "" {
-		log.Fatal("Environment variable ACCESS_TOKEN not set. See https://apps.twitter.com/app/new for more info.")
-	}
-
-	accessTokenSecret := os.Getenv("ACCESS_TOKEN_SECRET")
-
-	if accessTokenSecret == "" {
-		log.Fatal("Environment variable ACCESS_TOKEN_SECRET not set. See https://apps.twitter.com/app/new for more info.")
+	// Check if the second argument with toml auth file was given, if not load auth keys from env variables
+	if os.Args[2] == "" {
+		auth.loadFromEnvVariables()
+	} else {
+		auth.loadFromTomlFile(os.Args[2])
 	}
 
 	// Read the config file
@@ -78,9 +72,9 @@ func main() {
 	log.Println("Guffer is queueing the following tweets: ")
 
 	// Init the Twitter API
-	anaconda.SetConsumerKey(consumerKey)
-	anaconda.SetConsumerSecret(consumerSecret)
-	api = anaconda.NewTwitterApi(accessToken, accessTokenSecret)
+	anaconda.SetConsumerKey(auth.ConsumerKey)
+	anaconda.SetConsumerSecret(auth.ConsumerSecret)
+	api = anaconda.NewTwitterApi(auth.AccessToken, auth.AccessTokenSecret)
 
 	// Queue up the Tweets
 
@@ -95,4 +89,43 @@ func main() {
 func postTweet(status string) {
 	log.Println("Tweeting: ", status)
 	api.PostTweet(status, nil)
+}
+
+func (t *TwitterAuthKeys) loadFromEnvVariables() {
+	t.ConsumerKey = os.Getenv("CONSUMER_KEY")
+
+	if t.ConsumerKey == "" {
+		log.Fatal("Environment variable CONSUMER_KEY not set. See https://apps.twitter.com/app/new for more info.")
+	}
+
+	t.ConsumerSecret = os.Getenv("CONSUMER_SECRET")
+
+	if t.ConsumerSecret == "" {
+		log.Fatal("Environment variable CONSUMER_SECRET not set. See https://apps.twitter.com/app/new for more info.")
+	}
+
+	t.AccessToken = os.Getenv("ACCESS_TOKEN")
+
+	if t.AccessToken == "" {
+		log.Fatal("Environment variable ACCESS_TOKEN not set. See https://apps.twitter.com/app/new for more info.")
+	}
+
+	t.AccessTokenSecret = os.Getenv("ACCESS_TOKEN_SECRET")
+
+	if t.AccessTokenSecret == "" {
+		log.Fatal("Environment variable ACCESS_TOKEN_SECRET not set. See https://apps.twitter.com/app/new for more info.")
+	}
+}
+
+func (t *TwitterAuthKeys) loadFromTomlFile(filename string) {
+	// Load file to []byte
+	data, err := ioutil.ReadFile(filename)
+	// Check for error during loading
+	if err != nil {
+		log.Fatal(fmt.Sprintf("The %s file does not exists.", filename))
+	}
+	// Decode file contents
+	if _, err := toml.Decode(string(data), t); err != nil {
+		log.Fatal(fmt.Sprintf("Failed to decode %s file:%s", filename, err.Error()))
+	}
 }
