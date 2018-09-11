@@ -16,6 +16,7 @@ Set the following environment variables in either your user profile or at the co
 * ACCESS_TOKEN
 * ACCESS_TOKEN_SECRET
 
+You can also save these auth keys in `auth.toml` file (see below).
 ## Defining guffer.json
 
 Guffer looks for a config file, for example `guffer.json`, which defines the schedule and status message (the tweet). Here's an example:
@@ -36,7 +37,14 @@ Guffer looks for a config file, for example `guffer.json`, which defines the sch
   }
 ]
 ```
-
+## Defining auth.toml
+If you prefer to save twitter auth keys in a file, you can create a `.toml` file with this data
+```
+ConsumerKey = "YOUR_CONSUMER_KEY"
+ConsumerSecret = "YOUR_CONSUMER_SECRET"
+AccessToken = "YOUR_ACCES_TOKEN"
+AccessTokenSecret = "YOUR_TOKEN_SECRET"
+```
 ## Running guffer
 
 From source:
@@ -45,6 +53,8 @@ From source:
 go get github.com/mrichman/guffer
 cd $GOPATH/src/github.com/mrichman/guffer
 CONSUMER_KEY=xxxxx CONSUMER_SECRET=xxxxx ACCESS_TOKEN=xxxxx ACCESS_TOKEN_SECRET=xxxxx go run main.go guffer.json
+# With auth.toml
+go run main.go guffer.json auth.toml
 ```
 
 Binary:
@@ -52,7 +62,10 @@ Binary:
 ```
 CONSUMER_KEY=xxxxx CONSUMER_SECRET=xxxxx ACCESS_TOKEN=xxxxx ACCESS_TOKEN_SECRET=xxxxx guffer guffer.json
 ```
-
+or if you're using the auth.toml file  
+```
+guffer guffer.json auth.toml
+```
 Guffer will print out a summary of the queued tweets, and log each tweet to the console. Quit with `Ctrl+C`.
 
 # Contributing
